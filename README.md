@@ -59,6 +59,8 @@ Hướng dẫn riêng cho máy Mac: [HD_CHAY_TREN_MAC.md](HD_CHAY_TREN_MAC.md).
 3. Cả ba chế độ phải trả cùng số bản ghi và tổng amount.
 4. Bấm **Thử JSON lỗi qua ports**, xem thông báo, sau đó chạy lại một chế độ.
 
+**Nạp lại dataset** sẽ xóa các kết quả đang hiển thị để bắt đầu phiên mới; các file báo cáo đã ghi vẫn được giữ.
+
 ## Lấy số liệu
 
 Tại thư mục app, PowerShell Windows dùng `flutter run --profile -d windows`; Terminal Mac dùng `flutter run --profile -d macos`.
@@ -75,7 +77,7 @@ dart run tool/summarize_benchmark.dart benchmark_results/runs-XXX/report.json
 
 `taskMs` gồm thời gian gọi, khởi tạo, truyền và nhận kết quả. `parseMs` đo bên trong hàm parse/kiểm tra/tổng hợp. `estimatedUiFps` là số callback UI mỗi giây thực tế; `maxGapMs` là khoảng lâu nhất không có callback, gồm cả hai biên cửa sổ. Worker có thể làm UI mượt hơn nhưng mất nhiều tổng thời gian hơn.
 
-Các phép so sánh phải dùng cùng máy, dữ liệu và build mode. Phép đo callback chưa đối chiếu DevTools/FrameTiming; khi lifecycle là `unknown`, cần quan sát cửa sổ thủ công. Xem [phương pháp đo](docs/BENCHMARK.md).
+Các phép so sánh phải dùng cùng máy, dữ liệu và build mode. Phép đo callback chưa đối chiếu DevTools/FrameTiming; Mẫu `incomplete` bị loại khỏi bảng tổng hợp; lifecycle khác `resumed` lúc bắt đầu hoặc trong khi đo cũng làm mẫu bị loại. Khi lifecycle là `unknown`, cần quan sát cửa sổ thủ công. Xem [phương pháp đo](docs/BENCHMARK.md).
 
 ## Cấu trúc
 

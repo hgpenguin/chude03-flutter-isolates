@@ -2,7 +2,7 @@
 
 Tên A: **chưa điền**. Tên B: **chưa điền**.
 
-Phân công theo hai mảng: **A phụ trách dữ liệu và xử lý Isolate; B phụ trách giao diện và đo hiệu năng**. Tạm giữ cách bố trí máy trong kế hoạch cũ: A dùng Windows, B dùng Mac; đổi lại nếu thiết bị thực tế khác. Vai trò không phụ thuộc hệ điều hành.
+Phân công theo hai mảng: **A phụ trách dữ liệu và xử lý Isolate; B phụ trách giao diện và đo hiệu năng**. Dự kiến A dùng Windows, B dùng Mac; đổi lại nếu thiết bị thực tế khác. Vai trò không phụ thuộc hệ điều hành.
 
 Bảng dưới phân công rà soát, hoàn thiện, kiểm thử và trình bày. Ghi phần đã làm cùng commit vào bảng đóng góp ở cuối.
 
@@ -16,7 +16,7 @@ Bảng dưới phân công rà soát, hoàn thiện, kiểm thử và trình bà
 | UI Design, animation và tương tác | B | A | Rà soát `lib/main.dart`, `lib/screens/benchmark_page.dart`, `lib/widgets/`; kiểm bố cục, nút chọn mode, animation, nút +, thông báo kết quả/lỗi và khả năng thao tác khi demo. |
 | State Management và lifecycle | B | A | Rà soát `lib/controllers/benchmark_controller.dart`; kiểm nạp dữ liệu → sẵn sàng → đang chạy → thành công/lỗi; chặn chạy trùng; kiểm mounted/dispose và khả năng chạy lại sau lỗi. Phối hợp A tại chỗ hủy worker. |
 | Metrics và tổng hợp benchmark | B | A | Rà soát `lib/services/frame_metrics.dart`, `tool/summarize_benchmark.dart`; kiểm cửa sổ đo, FPS callback, max gap hai biên, taskMs/parseMs, `lib/services/report_writer.dart`, xuất JSON/CSV và bảng tổng hợp. |
-| Kiểm thử giao diện và metrics | B | A | Chịu trách nhiệm `test/benchmark_page_test.dart`, `test/frame_metrics_test.dart`; kiểm bằng test hiện có và thao tác thực tế trên cửa sổ app. |
+| Kiểm thử giao diện và metrics | B | A | Chịu trách nhiệm `test/benchmark_page_test.dart`, `test/benchmark_controller_test.dart`, `test/frame_metrics_test.dart`, `test/report_writer_test.dart`; kiểm bằng test hiện có và thao tác thực tế trên cửa sổ app. |
 | Kiến trúc và hướng dẫn chạy | A | B | Hoàn thiện `docs/ARCHITECTURE.md` và `README.md`: kiến trúc/Data Flow, cách dựng/chạy, yêu cầu môi trường, kết quả và giới hạn đã kiểm chứng. |
 | Phương pháp đo và kết quả | B | A | Hoàn thiện `docs/BENCHMARK.md`, `benchmark_results/RESULTS.md`; lưu raw JSON/CSV, ghi máy/build/dataset, đối chiếu DevTools trên máy đo và nêu giới hạn còn lại. |
 | Repo và bàn giao source | A | B | Tạo repo công khai theo yêu cầu đề, kiểm file đưa vào repo và hướng dẫn clone. B thử clone source sạch, chạy theo README và phản hồi lỗi cho A. Mỗi người tự commit phần mình bằng tài khoản thật. |

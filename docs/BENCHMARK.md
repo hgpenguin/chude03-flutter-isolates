@@ -19,7 +19,9 @@
 | maxGapMs | Gap lớn nhất giữa callbacks, bao gồm hai biên cửa sổ |
 | frameTimestampsUs | Các mốc callback từ cùng Stopwatch để tính lại |
 | lifecycleAtStart/End | Trạng thái embedding cung cấp; có thể unknown |
-| incomplete | Lỗi, không có callback hoặc đã nhận lifecycle rời resumed |
+| incomplete | Lỗi, không có callback, lifecycle đầu cửa sổ khác resumed hoặc nhận trạng thái rời resumed khi đang đo |
+
+Nếu lifecycle đã là `inactive`, `hidden`, `paused` hoặc `detached` ngay đầu cửa sổ, mẫu cũng bị đánh dấu `incomplete`. Mẫu này không được dùng để tính bảng tổng hợp.
 
 Không dùng 1000/buildDuration làm FPS. Không bỏ khoảng không có callback do Main đứng khỏi mẫu số. Khi lifecycle unknown, không tự suy ra cửa sổ đang focus; kiểm tra thủ công và công bố điều kiện này.
 

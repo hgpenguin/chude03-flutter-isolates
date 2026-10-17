@@ -54,7 +54,7 @@ flutter run --profile -d macos --dart-define=BENCHMARK_OUTPUT="$HOME/Downloads/i
 
 Cấu hình runner hiện tắt App Sandbox để bản Desktop dùng cho buổi demo có thể ghi báo cáo ra đường dẫn đã chọn. Cấu hình này dành cho chạy local, chưa phải cấu hình phát hành qua Mac App Store.
 
-Đo tất cả chế độ trên cùng Mac và cùng build mode. UI FPS là số callback mỗi giây, không phải FPS màn hình vật lý. Giữ cửa sổ hiện/focus khi đo, kiểm tra cờ `incomplete` trước khi dùng kết quả.
+Đo tất cả chế độ trên cùng Mac và cùng build mode. UI FPS là số callback mỗi giây, không phải FPS màn hình vật lý. Giữ cửa sổ hiện/focus khi đo, kiểm tra cờ `incomplete` trước khi dùng kết quả. Nếu lifecycle đầu cửa sổ khác `resumed` hoặc chuyển khỏi `resumed` trong lúc đo, app sẽ đánh dấu mẫu chưa đủ.
 
 ## Trạng thái kiểm tra
 
