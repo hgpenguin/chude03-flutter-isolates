@@ -1,0 +1,10 @@
+* text=auto
+*.dart text eol=lf
+*.md text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.sh text eol=lf
+# Preserve exact benchmark input and historical raw evidence.
+assets/transactions.json -text
+benchmark_results/*.json -text
+benchmark_results/*.csv -text

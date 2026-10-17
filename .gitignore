@@ -1,0 +1,16 @@
+.dart_tool/
+/build/
+/coverage/
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+.idea/
+*.iml
+*.ipr
+*.iws
+.DS_Store
+*.log
+*.swp
+app.*.symbols
+app.*.map.json
+.widget_preview/

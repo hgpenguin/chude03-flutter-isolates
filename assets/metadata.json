@@ -1,0 +1,9 @@
+{
+  "id": "transactions-v1",
+  "rule": "180000 rows; amount=(zeroBasedIndex*37+17)%100000",
+  "bytes": 28497671,
+  "count": 180000,
+  "totalAmount": 8967430000,
+  "fnv1a32": "5598744f",
+  "encoding": "UTF-8"
+}
