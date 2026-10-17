@@ -9,16 +9,23 @@ import '../models/task_result.dart';
 import '../models/worker_message.dart';
 
 // Callback top-level: không capture State, widget hoặc BuildContext.
-ParseResult parseTimed(String text) {
+ParseResult parseTimed(String text, {ProgressCallback? onProgress}) {
   final watch = Stopwatch()..start();
-  final summary = parseAndSummarize(text);
+  final summary = parseAndSummarize(text, onProgress: onProgress);
   watch.stop();
   return ParseResult(summary, watch.elapsedMicroseconds);
 }
 
 // Sealed messages chỉ chứa dữ liệu gửi được, không giữ State/BuildContext.
 void jsonWorker(WorkerRequest request) {
-  sendWorkerResult(request, parseTimed);
+  sendWorkerResult(
+    request,
+    (text) => parseTimed(
+      text,
+      onProgress: (done, total) =>
+          request.reply.send(WorkerProgress(done, total)),
+    ),
+  );
 }
 
 void sendWorkerResult(
@@ -41,15 +48,17 @@ class WorkerCancelled implements Exception {
   String toString() => 'Worker đã được đóng.';
 }
 
-// Cùng một port nhận result/error/exit để giữ thứ tự message của worker.
+// Cùng một port nhận progress/result/error/exit để giữ thứ tự message của worker.
 class SpawnJob {
   SpawnJob({
     this.timeout = const Duration(seconds: 60),
     this.entryPoint = jsonWorker,
+    this.onProgress,
   });
 
   final Duration timeout;
   final void Function(WorkerRequest) entryPoint;
+  final void Function(double fraction)? onProgress;
   final _done = Completer<ParseResult>();
   ReceivePort? _port;
   StreamSubscription<dynamic>? _subscription;
@@ -66,6 +75,8 @@ class SpawnJob {
       if (_done.isCompleted) return;
       if (message is WorkerMessage) {
         switch (message) {
+          case WorkerProgress(:final fraction):
+            onProgress?.call(fraction);
           case WorkerSuccess(:final result):
             _done.complete(result);
           case WorkerDataError(:final message, :final stack, :final offset):

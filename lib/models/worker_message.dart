@@ -12,6 +12,14 @@ sealed class WorkerMessage {
   const WorkerMessage();
 }
 
+// Worker gửi nhiều lần trong lúc kiểm tra bản ghi, trước WorkerSuccess.
+final class WorkerProgress extends WorkerMessage {
+  const WorkerProgress(this.done, this.total);
+  final int done;
+  final int total;
+  double get fraction => total == 0 ? 1 : done / total;
+}
+
 final class WorkerSuccess extends WorkerMessage {
   const WorkerSuccess(this.result);
   final ParseResult result;
