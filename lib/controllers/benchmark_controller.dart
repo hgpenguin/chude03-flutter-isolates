@@ -34,6 +34,7 @@ class BenchmarkController extends ChangeNotifier with WidgetsBindingObserver {
   bool _busy = false;
   bool _loading = false;
   bool _interrupted = false;
+  double? _progress;
   String _status = 'Chưa nạp dữ liệu';
   String _detail = 'Nạp JSON trước, sau đó chọn chế độ xử lý.';
   String? _savedPath;
@@ -47,6 +48,10 @@ class BenchmarkController extends ChangeNotifier with WidgetsBindingObserver {
   String get status => _status;
   String get detail => _detail;
   String? get savedPath => _savedPath;
+
+  /// Tiến độ 0..1 của Isolate.spawn đang chạy; null khi không có worker.
+  double? get progress => _progress;
+  bool get canCancel => !_disposed && _job != null;
 
   void _changed() {
     if (!_disposed) notifyListeners();
@@ -103,14 +108,25 @@ class BenchmarkController extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   Future<TaskResult> _process(ProcessingMode mode, String text) async {
-    final job = mode == ProcessingMode.spawn ? SpawnJob() : null;
-    _job = job;
+    final job = mode == ProcessingMode.spawn
+        ? SpawnJob(onProgress: (value) => _update(() => _progress = value))
+        : null;
+    _update(() {
+      _job = job;
+      _progress = job == null ? null : 0;
+    });
     try {
       return await processJson(mode, text, spawnJob: job);
     } finally {
-      _job = null;
+      _update(() {
+        _job = null;
+        _progress = null;
+      });
     }
   }
+
+  /// Nút Hủy: kill worker ngay; mẫu đo đang chạy được ghi là chưa đủ.
+  void cancelRun() => _job?.cancel();
 
   Future<void> _sample(ProcessingMode? mode) async {
     final dataset = _dataset!;
@@ -217,10 +233,15 @@ class BenchmarkController extends ChangeNotifier with WidgetsBindingObserver {
       _changed();
     } catch (error) {
       if (!_disposed) {
-        _status = invalid && error is FormatException
-            ? 'Đã bắt lỗi dữ liệu đúng dự kiến'
-            : 'Lỗi';
-        _detail = '$error';
+        if (error is WorkerCancelled) {
+          _status = 'Đã hủy';
+          _detail = 'Worker đã bị kill giữa chừng; mẫu đo ghi là chưa đủ.';
+        } else {
+          _status = invalid && error is FormatException
+              ? 'Đã bắt lỗi dữ liệu đúng dự kiến'
+              : 'Lỗi';
+          _detail = '$error';
+        }
         _changed();
       }
     } finally {

@@ -95,6 +95,8 @@ class _BenchmarkPageState extends State<BenchmarkPage>
                 onBaseline: () => _controller.execute(),
                 onBatch: () => _controller.execute(batch: true),
                 onInvalid: () => _controller.execute(invalid: true),
+                progress: _controller.progress,
+                onCancel: _controller.canCancel ? _controller.cancelRun : null,
               ),
               ResultsPanel(
                 runs: _controller.runs,

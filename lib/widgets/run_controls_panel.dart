@@ -11,12 +11,18 @@ class RunControlsPanel extends StatelessWidget {
     required this.onBaseline,
     required this.onBatch,
     required this.onInvalid,
+    this.progress,
+    this.onCancel,
   });
   final bool ready;
   final ValueChanged<ProcessingMode> onRun;
   final VoidCallback onBaseline;
   final VoidCallback onBatch;
   final VoidCallback onInvalid;
+
+  /// Tiến độ 0..1 do worker gửi qua SendPort; null khi không chạy Isolate.spawn.
+  final double? progress;
+  final VoidCallback? onCancel;
 
   @override
   Widget build(BuildContext context) => BenchmarkPanel(
@@ -46,6 +52,29 @@ class RunControlsPanel extends StatelessWidget {
           ),
         ],
       ),
+      if (progress case final value?) ...[
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            const Text('Isolate.spawn: '),
+            Expanded(
+              child: LinearProgressIndicator(
+                key: const Key('spawn-progress'),
+                value: value,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text('${(value * 100).round()}%'),
+            const SizedBox(width: 12),
+            OutlinedButton.icon(
+              key: const Key('cancel-spawn'),
+              onPressed: onCancel,
+              icon: const Icon(Icons.stop),
+              label: const Text('Hủy worker'),
+            ),
+          ],
+        ),
+      ],
       const SizedBox(height: 12),
       const Text(
         'Mỗi cửa sổ mục tiêu 5 giây, gồm cả khoảng UI đứng. '
