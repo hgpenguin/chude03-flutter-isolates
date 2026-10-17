@@ -7,8 +7,8 @@ App đọc một file JSON lớn, đếm số bản ghi và cộng `amount`. Ba 
 | Thư mục | Nhiệm vụ |
 |---|---|
 | `lib/screens/` | Ghép màn hình, quản lý animation và sao chép clipboard |
-| `lib/widgets/` | Các panel dữ liệu, tương tác, nút chạy và kết quả |
-| `lib/controllers/` | Trạng thái, khóa nút chạy, warm-up, cửa sổ đo và lifecycle |
+| `lib/widgets/` | Các panel dữ liệu, tương tác, nút chạy, tiến độ/Hủy và kết quả |
+| `lib/controllers/` | Trạng thái, khóa nút chạy, warm-up, cửa sổ đo, tiến độ worker và lifecycle |
 | `lib/models/` | Kiểu dữ liệu: summary, kết quả chạy, metadata, báo cáo và message worker |
 | `lib/services/` | Nạp dataset, parse JSON, chạy Isolate, tính metrics và ghi file |
 
@@ -23,6 +23,9 @@ flowchart TD
   E --> F[Main: parseTimed]
   E --> G[compute: parseTimed trong worker]
   E --> H[spawn: WorkerRequest tới jsonWorker]
+  H --> P[WorkerProgress nhiều lần qua ReceivePort]
+  P --> Q[Thanh tiến độ và nút Hủy]
+  Q -->|Hủy| R[SpawnJob.cancel: kill worker]
   H --> I[WorkerSuccess hoặc lỗi qua ReceivePort]
   F --> J[TaskResult: summary và thời gian]
   G --> J
@@ -39,7 +42,7 @@ flowchart TD
 - `ParseResult`: summary và thời gian bên trong parser. `TaskResult` thêm thời gian toàn lời gọi.
 - `RunRecord`: một lần đo, gồm chế độ, thời gian, metrics, lifecycle và lỗi nếu có.
 - `WorkerRequest`: chuỗi JSON và `SendPort` trả lời.
-- `WorkerMessage`: sealed class với `WorkerSuccess`, `WorkerDataError`, `WorkerFailure`.
+- `WorkerMessage`: sealed class với `WorkerProgress`, `WorkerSuccess`, `WorkerDataError`, `WorkerFailure`.
 
 Map được dùng ở ranh giới JSON: `jsonDecode`, kiểm tra trường đầu vào và `toJson`. Các lớp xử lý, controller và UI đọc thuộc tính có kiểu, không tra key chuỗi. Không tạo thêm 180.000 object nghiệp vụ vì app chỉ cần đếm và cộng tổng.
 
@@ -47,12 +50,21 @@ Map được dùng ở ranh giới JSON: `jsonDecode`, kiểm tra trường đ�
 
 1. Tạo `ReceivePort` và đăng ký listener trước khi spawn. `Completer<ParseResult>` cung cấp Future để Main chờ kết quả.
 2. Tạo timeout 60 giây, gọi `Isolate.spawn` với `WorkerRequest`. Chỉ gửi dữ liệu, không gửi controller hay UI.
-3. Worker gọi parser. Thành công gửi `WorkerSuccess`; JSON sai gửi `WorkerDataError`; lỗi khác gửi `WorkerFailure` kèm tên kiểu và stack trace.
-4. Main xử lý message bằng `switch`. Chỉ `WorkerDataError` trở thành `FormatException`; lỗi xử lý khác thành `RemoteWorkerException`.
-5. `onError` nhận lỗi chưa được worker bắt; VM gửi chuỗi lỗi và stack, nên tên loại được ghi là `uncaught`. `onExit` trả null nếu worker kết thúc mà chưa có kết quả.
-6. Future hoàn tất hoặc lỗi đều đi qua `finally`: hủy timer, subscription, đóng port và kill worker. Nếu đóng màn hình trước khi spawn hoàn tất, worker vừa tạo cũng được kill.
+3. Worker gọi parser. Trong bước kiểm tra bản ghi, worker gửi `WorkerProgress(done, total)` khoảng 10 lần. `jsonDecode` là một lời gọi nguyên khối nên phần giải mã không có tiến độ; message tiến độ đầu tiên đến sau khi giải mã xong.
+4. Thành công gửi `WorkerSuccess`; JSON sai gửi `WorkerDataError`; lỗi khác gửi `WorkerFailure` kèm tên kiểu và stack trace.
+5. Main xử lý message bằng `switch`. `WorkerProgress` gọi `onProgress` và không kết thúc job. Chỉ `WorkerDataError` trở thành `FormatException`; lỗi xử lý khác thành `RemoteWorkerException`.
+6. `onError` nhận lỗi chưa được worker bắt; VM gửi chuỗi lỗi và stack, nên tên loại được ghi là `uncaught`. `onExit` trả null nếu worker kết thúc mà chưa có kết quả.
+7. Future hoàn tất hoặc lỗi đều đi qua `finally`: hủy timer, subscription, đóng port và kill worker. Nếu đóng màn hình trước khi spawn hoàn tất, worker vừa tạo cũng được kill.
 
-Các thông báo dùng chung một port để xử lý kết quả trước thông báo thoát. Mỗi `SpawnJob` chỉ chạy một lần. `compute` không có thao tác kill trực tiếp trong app; controller bỏ kết quả đến sau dispose.
+Các thông báo dùng chung một port nên tiến độ luôn đến trước kết quả, kết quả đến trước thông báo thoát. Mỗi `SpawnJob` chỉ chạy một lần.
+
+## Tiến độ và Hủy
+
+Khi chạy `Isolate.spawn`, controller tạo `SpawnJob(onProgress: ...)` và lưu `progress` (0..1). `RunControlsPanel` hiện thanh tiến độ và nút **Hủy worker**. Nút này gọi `controller.cancelRun()` → `SpawnJob.cancel()`: Future kết thúc bằng `WorkerCancelled`, worker bị kill ngay, trạng thái chuyển thành "Đã hủy" và mẫu đo đang chạy được ghi `incomplete`. Batch đang chạy cũng dừng lại.
+
+Đây là điểm `Isolate.spawn` làm được mà `compute` không làm được: nhận nhiều message trong lúc chạy và dừng worker giữa chừng. `compute` không có thao tác kill trực tiếp trong app; controller bỏ kết quả đến sau dispose.
+
+Mỗi message tiến độ làm UI dựng lại một lần, tức khoảng 10 lần cho mỗi lần chạy spawn. Chi phí này nhỏ so với cửa sổ đo 5 giây nhưng là khác biệt giữa chế độ spawn và compute; cần nêu khi so sánh số liệu.
 
 ## Chuẩn bị dữ liệu và đo
 
