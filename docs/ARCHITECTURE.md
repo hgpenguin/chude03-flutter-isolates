@@ -2,7 +2,7 @@
 
 App đọc một file JSON lớn, đếm số bản ghi và cộng `amount`. Ba chế độ chạy cùng một hàm xử lý. Khi chạy trên Main, tác vụ CPU có thể chặn giao diện; khi chạy trong worker, Main có thể tiếp tục vẽ vòng quay và nhận thao tác.
 
-## Chia trách nhiệm
+## Nhiệm vụ
 
 | Thư mục | Nhiệm vụ |
 |---|---|
