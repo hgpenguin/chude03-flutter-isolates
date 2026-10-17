@@ -1,6 +1,7 @@
 import 'package:isolate_demo/models/worker_message.dart';
 import 'package:isolate_demo/models/task_result.dart';
 import 'package:isolate_demo/models/parse_summary.dart';
+import 'package:isolate_demo/services/json_parser.dart';
 
 import 'dart:async';
 import 'dart:isolate';
@@ -16,6 +17,11 @@ void waitForever(WorkerRequest _) {
   ReceivePort().listen((_) {});
 }
 
+void progressThenWait(WorkerRequest request) {
+  request.reply.send(const WorkerProgress(1, 10));
+  ReceivePort().listen((_) {});
+}
+
 ParseResult programmingFailure(String _) => throw StateError('parser bug');
 
 ParseResult typeFailure(String _) {
@@ -28,6 +34,9 @@ void caughtProgrammingFailure(WorkerRequest request) =>
 
 void caughtTypeFailure(WorkerRequest request) =>
     sendWorkerResult(request, typeFailure);
+
+String records(int count, int amount) =>
+    '[${List.filled(count, '{"amount":$amount}').join(',')}]';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -130,4 +139,31 @@ void main() {
       await Future<void>.delayed(const Duration(milliseconds: 100));
     },
   );
+
+  test('parser reports increasing progress and ends at done == total', () {
+    final calls = <(int, int)>[];
+    parseAndSummarize(records(25, 1), onProgress: (d, t) => calls.add((d, t)));
+    final done = calls.map((c) => c.$1).toList();
+    expect(calls.last, (25, 25));
+    expect(done, orderedEquals([...done]..sort()));
+    expect(calls.length, lessThanOrEqualTo(11));
+  });
+
+  test('spawn sends progress through the port before the result', () async {
+    final seen = <double>[];
+    final result = await SpawnJob(onProgress: seen.add).run(records(40, 2));
+    expect(result.summary, const ParseSummary(count: 40, totalAmount: 80));
+    expect(seen, isNotEmpty);
+    expect(seen, orderedEquals([...seen]..sort()));
+    expect(seen.last, 1.0);
+  });
+
+  test('cancel after the first progress message kills the worker', () async {
+    late final SpawnJob job;
+    job = SpawnJob(
+      entryPoint: progressThenWait,
+      onProgress: (_) => job.cancel(),
+    );
+    await expectLater(job.run('[]'), throwsA(isA<WorkerCancelled>()));
+  });
 }
