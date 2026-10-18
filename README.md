@@ -81,10 +81,7 @@ Giữ `pubspec.yaml`, `pubspec.lock`, `.metadata` và `analysis_options.yaml` kh
 
 ## Tài liệu
 
-- [Yêu cầu và đầu việc còn lại](docs/REQUIREMENTS.md)
 - [Kiến trúc, SpawnJob và cách tính FPS/gap](docs/ARCHITECTURE.md)
 - [Kết quả Windows của phiên bản trước refactor](benchmark_results/RESULTS.md)
-- [Kịch bản demo và Q&A](docs/DEMO.md)
 - [Phân công hai thành viên](TEAM.md)
-- [Phần việc A: dữ liệu, logic, Isolate và bằng chứng Git](docs/PHAN_VIEC_A.md)
-- [Bàn giao thay đổi và commit theo hai thành viên](docs/GIT_HANDOFF.md)
+
