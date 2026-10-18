@@ -11,8 +11,8 @@
 
 | Trường | Ý nghĩa |
 |---|---|
-| taskMs | Từ trước lời gọi Main/compute/spawn đến khi nhận kết quả; gồm overhead gọi/truyền/nhận |
-| parseMs | Stopwatch trong callback chung: decode + validate + tổng hợp; có ảnh hưởng GC/lập lịch |
+| task ms | Từ trước lời gọi Main/compute/spawn đến khi nhận kết quả; gồm overhead gọi/truyền/nhận |
+| parse ms | Stopwatch trong callback chung: decode + validate + tổng hợp; có ảnh hưởng GC/lập lịch |
 | windowMs | Thời gian thực tế của toàn cửa sổ, gồm cả khoảng Main đứng |
 | frameCallbacks | Số callback AnimationController trong cửa sổ |
 | estimatedUiFps | frameCallbacks / (windowMs/1000); không phải FPS vật lý |
