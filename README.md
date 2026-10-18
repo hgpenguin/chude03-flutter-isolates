@@ -65,7 +65,7 @@ Hướng dẫn riêng cho máy Mac: [HD_CHAY_TREN_MAC.md](HD_CHAY_TREN_MAC.md).
 
 Tại thư mục app, PowerShell Windows dùng `flutter run --profile -d windows`; Terminal Mac dùng `flutter run --profile -d macos`.
 
-Mỗi lần bấm **Main Isolate**, **compute** hoặc **Isolate.spawn** tạo một mẫu đo cho chế độ đã chọn. App không chạy warm-up, không đo không tải và không tự lặp 5 vòng. Giữ cửa sổ hiện trên màn hình và hạn chế đổi tải máy trong khi đo. Nếu cần nhiều mẫu cho báo cáo, tự chạy lại các chế độ với cùng điều kiện; ghi số lần đo thực tế.
+Mỗi lần bấm **Main Isolate**, **compute** hoặc **Isolate.spawn** tạo một mẫu đo cho chế độ đã chọn. Giữ cửa sổ hiện trên màn hình và hạn chế đổi tải máy trong khi đo. Nếu cần nhiều mẫu cho báo cáo, tự chạy lại các chế độ với cùng điều kiện; ghi số lần đo thực tế.
 
 JSON và CSV được lưu sau phép đo vào `benchmark_results/runs-…/report.json` và `report.csv`. Đường dẫn hiện trên màn hình; có thể sao chép JSON. Đổi nơi lưu bằng `--dart-define=BENCHMARK_OUTPUT=<thư mục>`; ghi điều kiện máy bằng `--dart-define=BENCHMARK_MACHINE=<mô tả>`. Flutter SDK tự cung cấp phiên bản vào báo cáo.
 
@@ -107,7 +107,3 @@ Giữ `pubspec.yaml`, `pubspec.lock`, `.metadata` và `analysis_options.yaml` kh
 - [Phân công hai thành viên](TEAM.md)
 - [Phần việc A: dữ liệu, logic, Isolate và bằng chứng Git](docs/PHAN_VIEC_A.md)
 - [Bàn giao thay đổi và commit theo hai thành viên](docs/GIT_HANDOFF.md)
-
-macOS cần được build và chạy trên máy Mac trước buổi báo cáo. File slide sẽ bổ sung khi hoàn tất.
-
-Kiểm tra sau refactor ngày 17/10/2026: format hoàn tất, `flutter analyze` không có lỗi/cảnh báo, **31 test pass**. Build Windows profile thành công. macOS chưa kiểm tra.
