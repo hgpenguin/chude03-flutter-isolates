@@ -105,6 +105,7 @@ Giữ `pubspec.yaml`, `pubspec.lock`, `.metadata` và `analysis_options.yaml` kh
 - [Kết quả Windows của phiên bản trước refactor](benchmark_results/RESULTS.md)
 - [Kịch bản demo và Q&A](docs/DEMO.md)
 - [Phân công hai thành viên](TEAM.md)
+- [Phần việc A: dữ liệu, logic, Isolate và bằng chứng Git](docs/PHAN_VIEC_A.md)
 
 macOS cần được build và chạy trên máy Mac trước buổi báo cáo. File slide sẽ bổ sung khi hoàn tất.
 

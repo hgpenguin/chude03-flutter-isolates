@@ -1,6 +1,6 @@
 # Phân công nhóm 02 sinh viên — Chủ đề 03
 
-Tên A: **chưa điền**. Tên B: **chưa điền**.
+Tên A: **hgpenguin** (tài khoản Git; chưa điền họ tên). Tên B: **chưa điền**.
 
 Phân công theo hai mảng: **A phụ trách dữ liệu và xử lý Isolate; B phụ trách giao diện và đo hiệu năng**. Dự kiến A dùng Windows, B dùng Mac; đổi lại nếu thiết bị thực tế khác. Vai trò không phụ thuộc hệ điều hành.
 
@@ -48,7 +48,7 @@ Cả hai cần trả lời được toàn luồng, giải thích phần do ngư�
 
 | Thành viên | Việc thực tế đã làm | Ngày hoàn thành | Commit / bằng chứng | Người review và kết quả |
 |---|---|---|---|---|
-| A — chưa điền tên | Chưa ghi nhận | — | — | — |
+| A — hgpenguin | Rà soát dữ liệu/parser/Isolate và test tương ứng; lập [bản đối chiếu phần A](docs/PHAN_VIEC_A.md), liên kết README và ghi nhận đúng tác giả các bổ sung tiến độ/Hủy. | 18/10/2026 | Mã ban đầu: [8f1ce1d](https://github.com/hgpenguin/chude03-flutter-isolates/commit/8f1ce1d9d31ce2a27f027ab8a3a6a0b5bde20cc6); kết quả kiểm tra và lịch sử chi tiết trong bản đối chiếu. | Chưa có xác nhận review chéo. |
 | B — chưa điền tên | Chưa ghi nhận | — | — | — |
 
 Cập nhật bảng sau mỗi phần hoàn thành; mỗi người commit bằng tài khoản của mình. Trước khi nộp, kiểm tra link repo, slide, chạy trên máy demo và thử lại README từ source sạch.
