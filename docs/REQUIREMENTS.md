@@ -17,21 +17,9 @@ Nguồn: đề bài môn học `Chude_LaptrinhDanentang.pdf`, trang 1–3. Hai s
 | R11 | Dart style, ngoại lệ, demo ổn định, UI hoàn thiện | Analyze, test parser/kết quả/lỗi/lifecycle và demo native |
 | R12 | Hiểu cơ sở và giải thích được sản phẩm | Mỗi thành viên tự sửa, lần luồng và trả lời vấn đáp |
 
-Thang điểm theo đề: slide/báo cáo 20%; source 30%; demo 30%; thuyết trình/Q&A 20%.
-
 ## Phương án triển khai của nhóm
 
-- Chung source Windows/macOS Desktop; đề không yêu cầu riêng Android cho Chủ đề 03.
+- Chung source Windows/macOS Desktop;
 - JSON cục bộ UTF-8 28.497.671 byte (>15 MiB), 180.000 bản ghi; tổng amount 8.967.430.000.
-- Main, compute và Isolate.spawn cùng gọi một parser. Ba nút là lựa chọn minh họa của nhóm, không phải số chế độ bắt buộc của đề.
+- Main, compute và Isolate.spawn cùng gọi một parser.
 - Có animation, nút tương tác, UI FPS ước lượng, gap và thời gian xử lý; số liệu không phải FPS màn hình vật lý.
-- Database/API: không dùng; input nằm trong asset offline.
-
-## Phần còn cần hoàn tất để nộp
-
-- Xác nhận WBS theo tên hai thành viên trong TEAM.md; mỗi người review và tự commit phần thực tế mình hoàn thiện. Bản đơn giản hóa UI chờ Nhi nhận bản vá và commit theo GIT_HANDOFF.md.
-- Làm slide PowerPoint/PDF theo mẫu lớp nếu có.
-- Repo công khai: [github.com/hgpenguin/chude03-flutter-isolates](https://github.com/hgpenguin/chude03-flutter-isolates). Thành viên còn lại thử clone và chạy README trên máy của mình.
-- Kiểm tra macOS nếu dùng Mac để báo cáo; hiện mới có bằng chứng Windows.
-- Đối chiếu phép đo với DevTools; ghi giới hạn lifecycle unknown của môi trường Windows đã đo.
-- Tổng duyệt: mỗi thành viên trình bày được luồng xử lý, SpawnJob.run và cách tính FPS/gap.
