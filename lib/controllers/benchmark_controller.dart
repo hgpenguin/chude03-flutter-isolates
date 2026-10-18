@@ -3,9 +3,9 @@ import 'dart:math' as math;
 
 import 'package:flutter/widgets.dart';
 
+import '../models/benchmark_report.dart';
 import '../models/run_record.dart';
 import '../models/task_result.dart';
-import '../models/benchmark_report.dart';
 import '../services/dataset.dart';
 import '../services/frame_metrics.dart';
 import '../services/processing.dart';
@@ -23,6 +23,8 @@ class BenchmarkController extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   final Future<Dataset> Function() loadDataset;
+  double? displayRefreshRateHz;
+
   final ReportWriter _writer;
   final _closed = Completer<void>();
   final List<RunRecord> _runs = [];
@@ -38,7 +40,6 @@ class BenchmarkController extends ChangeNotifier with WidgetsBindingObserver {
   String _status = 'Chưa nạp dữ liệu';
   String _detail = 'Nạp JSON trước, sau đó chọn chế độ xử lý.';
   String? _savedPath;
-  double? displayRefreshRateHz;
 
   Dataset? get dataset => _dataset;
   List<RunRecord> get runs => List.unmodifiable(_runs);
@@ -53,16 +54,16 @@ class BenchmarkController extends ChangeNotifier with WidgetsBindingObserver {
   double? get progress => _progress;
   bool get canCancel => !_disposed && _job != null;
 
-  void _changed() {
-    if (!_disposed) notifyListeners();
+  void _update(void Function() change) {
+    if (_disposed) return;
+    change();
+    notifyListeners();
   }
 
-  void _update(void Function() change) {
-    if (!_disposed) {
-      change();
-      _changed();
-    }
-  }
+  void _setStatus(String status, [String? detail]) => _update(() {
+    _status = status;
+    if (detail != null) _detail = detail;
+  });
 
   void recordFrame() {
     final watch = _window;
@@ -82,28 +83,25 @@ class BenchmarkController extends ChangeNotifier with WidgetsBindingObserver {
   Future<void> load() async {
     if (_disposed || _busy || _loading) return;
 
-    _loading = true;
-    _dataset = null;
-    _runs.clear();
-    _savedPath = null;
-    _status = 'Đang nạp dữ liệu';
-    _changed();
+    _update(() {
+      _loading = true;
+      _dataset = null;
+      _runs.clear();
+      _savedPath = null;
+      _status = 'Đang nạp dữ liệu';
+    });
     try {
       final dataset = await loadDataset();
       if (_disposed) return;
-
       _dataset = dataset;
-      _status = 'Sẵn sàng';
-      _detail = 'Đã kiểm tra byte UTF-8 và checksum. Nạp nằm ngoài phép đo.';
-      _changed();
+      _setStatus(
+        'Sẵn sàng',
+        'Đã kiểm tra byte UTF-8 và checksum. Nạp nằm ngoài phép đo.',
+      );
     } catch (error) {
-      if (!_disposed) {
-        _status = 'Lỗi';
-        _detail = 'Không nạp được dataset: $error';
-        _changed();
-      }
+      _setStatus('Lỗi', 'Không nạp được dataset: $error');
     } finally {
-      if (!_disposed) _update(() => _loading = false);
+      _update(() => _loading = false);
     }
   }
 
@@ -133,13 +131,14 @@ class BenchmarkController extends ChangeNotifier with WidgetsBindingObserver {
     final lifecycleAtStart = WidgetsBinding.instance.lifecycleState;
     _interrupted = isKnownBackground(lifecycleAtStart);
 
-    _status = 'Đang chạy • ${mode.label}';
-    _detail =
-        'Cửa sổ mục tiêu 5 giây, gồm thời gian trước và sau tác vụ. '
-        'Thử bấm nút + và quan sát vòng quay.';
-    _changed();
+    _setStatus(
+      'Đang chạy • ${mode.label}',
+      'Cửa sổ mục tiêu 5 giây, gồm thời gian trước và sau tác vụ. '
+          'Thử bấm nút + và quan sát vòng quay.',
+    );
     await WidgetsBinding.instance.endOfFrame;
     if (_disposed) throw WorkerCancelled();
+
     final frames = FrameMetrics();
     final window = Stopwatch()..start();
     _frames = frames;
@@ -170,6 +169,7 @@ class BenchmarkController extends ChangeNotifier with WidgetsBindingObserver {
       _frames = null;
     }
     if (_disposed) throw WorkerCancelled();
+
     final row = RunRecord(
       runId: _runs.length + 1,
       utc: DateTime.now().toUtc(),
@@ -189,56 +189,52 @@ class BenchmarkController extends ChangeNotifier with WidgetsBindingObserver {
     if (failure != null) throw failure;
   }
 
-  Future<void> execute(ProcessingMode mode) => _execute(mode: mode);
+  Future<void> execute(ProcessingMode mode) => _runExclusive(() async {
+    await _sample(mode);
+    _setStatus(
+      'Thành công',
+      'Kết quả đã đối chiếu metadata. '
+          'UI FPS là số callback UI/giây thực tế; không phải FPS màn hình vật lý.',
+    );
+  });
 
-  Future<void> tryInvalidJson() => _execute(invalid: true);
+  Future<void> tryInvalidJson() => _runExclusive(() async {
+    _setStatus('Đang thử JSON lỗi');
+    try {
+      await _process(ProcessingMode.spawn, '[{"amount":"sai kiểu"}]');
+    } on FormatException catch (error) {
+      _setStatus('Đã bắt lỗi dữ liệu đúng dự kiến', '$error');
+      return;
+    }
+    throw StateError('Parser đã chấp nhận dữ liệu sai.');
+  });
 
-  Future<void> _execute({ProcessingMode? mode, bool invalid = false}) async {
+  Future<void> _runExclusive(Future<void> Function() task) async {
     if (!ready) return;
     _update(() => _busy = true);
+    final runsBefore = _runs.length;
     try {
-      if (invalid) {
-        _update(() => _status = 'Đang thử JSON lỗi');
-        await _process(ProcessingMode.spawn, '[{"amount":"sai kiểu"}]');
-        throw StateError('Parser đã chấp nhận dữ liệu sai!');
-      } else {
-        await _sample(mode!);
-      }
-      if (_disposed) return;
-
-      _status = 'Thành công';
-      _detail =
-          'Kết quả đã đối chiếu metadata. '
-          'UI FPS là số callback UI/giây thực tế; không phải FPS màn hình vật lý.';
-      _changed();
+      await task();
+    } on WorkerCancelled {
+      _setStatus(
+        'Đã hủy',
+        'Worker đã bị kill giữa chừng; mẫu đo ghi là chưa đủ.',
+      );
     } catch (error) {
-      if (!_disposed) {
-        if (error is WorkerCancelled) {
-          _status = 'Đã hủy';
-          _detail = 'Worker đã bị kill giữa chừng; mẫu đo ghi là chưa đủ.';
-        } else {
-          _status = invalid && error is FormatException
-              ? 'Đã bắt lỗi dữ liệu đúng dự kiến'
-              : 'Lỗi';
-          _detail = '$error';
-        }
-        _changed();
-      }
-    } finally {
-      if (!_disposed) {
-        // Ghi file sau cửa sổ đo, kể cả tác vụ lỗi để giữ mẫu dở dang.
-        try {
-          if (_runs.isNotEmpty) await _save();
-        } catch (error) {
-          if (!_disposed) {
-            _status = 'Lỗi lưu báo cáo';
-            _detail = '$error';
-            _changed();
-          }
-        }
-        if (!_disposed) _update(() => _busy = false);
+      _setStatus('Lỗi', '$error');
+    }
+    if (_disposed) return;
+
+    // Lưu cả mẫu lỗi để không mất dữ liệu của lần đo dở dang.
+    if (_runs.length != runsBefore) {
+      try {
+        final saved = await _writer.save(report());
+        _update(() => _savedPath = saved.jsonPath);
+      } catch (error) {
+        _setStatus('Lỗi lưu báo cáo', '$error');
       }
     }
+    _update(() => _busy = false);
   }
 
   BenchmarkReport report() => BenchmarkReport(
@@ -248,11 +244,6 @@ class BenchmarkController extends ChangeNotifier with WidgetsBindingObserver {
   );
 
   String reportJson() => report().encode();
-
-  Future<void> _save() async {
-    final saved = await _writer.save(report());
-    if (!_disposed) _update(() => _savedPath = saved.jsonPath);
-  }
 
   @override
   void dispose() {
