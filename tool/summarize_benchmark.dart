@@ -25,7 +25,7 @@ void main(List<String> args) {
     '| Chế độ | n hợp lệ | Task ms median [min–max] | UI FPS ≈ median [min–max] | Gap ms median [min–max] |',
   );
   stdout.writeln('|---|---:|---|---|---|');
-  for (final mode in ['baseline', 'main', 'compute', 'spawn']) {
+  for (final mode in ['main', 'compute', 'spawn']) {
     final rows = runs
         .where((r) => r['mode'] == mode && r['incomplete'] == false)
         .toList();

@@ -1,6 +1,10 @@
 # Phân công nhóm 02 sinh viên — Chủ đề 03
 
-Tên A: **hgpenguin** (tài khoản Git; chưa điền họ tên). Tên B: **chưa điền**.
+Thành viên A: **Nguyễn Thái Hoàng** — Git `hgpenguin`, email `thaihoangh216@gmail.com`.
+
+Thành viên B: **Lê Trương Uyển Nhi** — email Git theo lịch sử repo `ltuyennhi11b1@gmail.com`.
+
+Tỷ lệ phân công theo bảng của nhóm: **Hoàng 50%, Nhi 50%**. Đây là tỷ lệ công việc được giao, không suy ra từ số commit hoặc số dòng code.
 
 Phân công theo hai mảng: **A phụ trách dữ liệu và xử lý Isolate; B phụ trách giao diện và đo hiệu năng**. Dự kiến A dùng Windows, B dùng Mac; đổi lại nếu thiết bị thực tế khác. Vai trò không phụ thuộc hệ điều hành.
 
@@ -13,6 +17,7 @@ Bảng dưới phân công rà soát, hoàn thiện, kiểm thử và trình bà
 | Dữ liệu và business logic | A | B | Rà soát `lib/services/dataset.dart`, `lib/services/json_parser.dart`, `tool/generate_dataset.dart`; tái tạo JSON/metadata, kiểm byte/checksum/count/tổng, xử lý JSON sai cấu trúc. |
 | Main / compute / spawn và ports | A | B | Rà soát `lib/services/processing.dart`; giải thích parser chung, input/output, SendPort/ReceivePort; kiểm lỗi, timeout, worker thoát sớm và cleanup. |
 | Kiểm thử dữ liệu và xử lý | A | B | Chịu trách nhiệm `test/dataset_test.dart`, `test/json_parser_test.dart`, `test/compute_parser_test.dart`, `test/processing_test.dart`; xác nhận các mode cùng kết quả và các ca lỗi được xử lý. Chỉ bổ sung test khi còn thiếu tình huống có ý nghĩa. |
+| Tiến độ và hủy worker | A | B | Hoàng phụ trách giao thức WorkerProgress và SpawnJob.cancel, test logic; Nhi tích hợp thanh tiến độ/nút Hủy trong UI và controller. Các commit lịch sử giữ nguyên tác giả thực tế. |
 | UI Design, animation và tương tác | B | A | Rà soát `lib/main.dart`, `lib/screens/benchmark_page.dart`, `lib/widgets/`; kiểm bố cục, nút chọn mode, animation, nút +, thông báo kết quả/lỗi và khả năng thao tác khi demo. |
 | State Management và lifecycle | B | A | Rà soát `lib/controllers/benchmark_controller.dart`; kiểm nạp dữ liệu → sẵn sàng → đang chạy → thành công/lỗi; chặn chạy trùng; kiểm mounted/dispose và khả năng chạy lại sau lỗi. Phối hợp A tại chỗ hủy worker. |
 | Metrics và tổng hợp benchmark | B | A | Rà soát `lib/services/frame_metrics.dart`, `tool/summarize_benchmark.dart`; kiểm cửa sổ đo, FPS callback, max gap hai biên, taskMs/parseMs, `lib/services/report_writer.dart`, xuất JSON/CSV và bảng tổng hợp. |
@@ -42,13 +47,13 @@ Nếu dùng Mac để demo hoặc đưa số liệu Mac vào báo cáo, B phải
 | Demo và code — 5 phút | 2 phút: chỉ parser và luồng ports trong code; demo JSON lỗi, phục hồi và chỗ nhận kết quả. | 3 phút: giới thiệu dataset, chạy Main/compute/spawn, thao tác animation/nút + và đọc số liệu. |
 | Q&A — 5 phút | Chủ trì câu hỏi parser, async, Isolate, ports, lỗi/timeout/cleanup. | Chủ trì câu hỏi UI/lifecycle, FPS/gap, tính công bằng của benchmark. |
 
-Cả hai cần trả lời được toàn luồng, giải thích phần do người kia phụ trách và thay nhau thao tác demo. Không chạy batch benchmark dài trong phần demo 5 phút; chuẩn bị kết quả trước.
+Cả hai cần trả lời được toàn luồng, giải thích phần do người kia phụ trách và thay nhau thao tác demo. Chuẩn bị số liệu trước bằng cách chạy thủ công từng chế độ; bản đơn giản hóa bỏ warm-up và đo không tải.
 
 ## 4. Ghi nhận đóng góp thực tế
 
 | Thành viên | Việc thực tế đã làm | Ngày hoàn thành | Commit / bằng chứng | Người review và kết quả |
 |---|---|---|---|---|
-| A — hgpenguin | Rà soát dữ liệu/parser/Isolate và test tương ứng; lập [bản đối chiếu phần A](docs/PHAN_VIEC_A.md), liên kết README và ghi nhận đúng tác giả các bổ sung tiến độ/Hủy. | 18/10/2026 | Mã ban đầu: [8f1ce1d](https://github.com/hgpenguin/chude03-flutter-isolates/commit/8f1ce1d9d31ce2a27f027ab8a3a6a0b5bde20cc6); kết quả kiểm tra và lịch sử chi tiết trong bản đối chiếu. | Chưa có xác nhận review chéo. |
-| B — chưa điền tên | Chưa ghi nhận | — | — | — |
+| A — Nguyễn Thái Hoàng | Rà soát dữ liệu/parser/Isolate và test tương ứng; lập [bản đối chiếu phần A](docs/PHAN_VIEC_A.md). Cập nhật tài liệu/phân công và chuẩn bị bàn giao bản đơn giản hóa UI cho Nhi. | 18/10/2026 | Mã ban đầu: [8f1ce1d](https://github.com/hgpenguin/chude03-flutter-isolates/commit/8f1ce1d9d31ce2a27f027ab8a3a6a0b5bde20cc6); tài liệu phần A: [d70d0a7](https://github.com/hgpenguin/chude03-flutter-isolates/commit/d70d0a7ed1c7907b2cb4c98b613114af20ed95f7). Lần cập nhật tài liệu tiếp theo nằm trên nhánh `refactor/simplify-isolate-demo`. | Chưa có xác nhận review chéo. |
+| B — Lê Trương Uyển Nhi | Lịch sử repo đã có các bổ sung worker, test, UI và tài liệu tiến độ/Hủy. Bản đơn giản hóa UI/controller/đo hiệu năng đã được chuẩn bị để Nhi nhận, kiểm tra, hoàn thiện và tự commit. | Commit cũ: 17/10/2026; bản đơn giản hóa: đang bàn giao | [30b2428](https://github.com/hgpenguin/chude03-flutter-isolates/commit/30b2428), [7a3e32c](https://github.com/hgpenguin/chude03-flutter-isolates/commit/7a3e32c), [f8a812f](https://github.com/hgpenguin/chude03-flutter-isolates/commit/f8a812f), [1df1617](https://github.com/hgpenguin/chude03-flutter-isolates/commit/1df1617). Xem [bàn giao Git](docs/GIT_HANDOFF.md) cho phần mới. | Chưa có xác nhận Nhi review bản vá, build hoặc đo trên máy demo. |
 
 Cập nhật bảng sau mỗi phần hoàn thành; mỗi người commit bằng tài khoản của mình. Trước khi nộp, kiểm tra link repo, slide, chạy trên máy demo và thử lại README từ source sạch.

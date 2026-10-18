@@ -55,7 +55,7 @@ Hướng dẫn riêng cho máy Mac: [HD_CHAY_TREN_MAC.md](HD_CHAY_TREN_MAC.md).
 ## Cách thử
 
 1. Chờ **Sẵn sàng**. App kiểm tra dung lượng, checksum và giải mã UTF-8 trong worker.
-2. Chạy **Đo không tải**, rồi **Main Isolate**, **compute**, **Isolate.spawn**. Quan sát vòng quay, thử nút + và so sánh kết quả.
+2. Chạy lần lượt **Main Isolate**, **compute**, **Isolate.spawn**. Quan sát vòng quay, thử nút + và so sánh kết quả.
 3. Cả ba chế độ phải trả cùng số bản ghi và tổng amount.
 4. Bấm **Thử JSON lỗi qua ports**, xem thông báo, sau đó chạy lại một chế độ.
 
@@ -65,7 +65,7 @@ Hướng dẫn riêng cho máy Mac: [HD_CHAY_TREN_MAC.md](HD_CHAY_TREN_MAC.md).
 
 Tại thư mục app, PowerShell Windows dùng `flutter run --profile -d windows`; Terminal Mac dùng `flutter run --profile -d macos`.
 
-Bấm **Warm-up + 5 vòng**: app chạy khởi động từng chế độ, một lần không tải và năm vòng luân phiên ba chế độ. Quá trình mất khoảng 80 giây. Giữ cửa sổ hiện trên màn hình và hạn chế đổi tải máy trong khi đo.
+Mỗi lần bấm **Main Isolate**, **compute** hoặc **Isolate.spawn** tạo một mẫu đo cho chế độ đã chọn. Giữ cửa sổ hiện trên màn hình và hạn chế đổi tải máy trong khi đo. Nếu cần nhiều mẫu cho báo cáo, tự chạy lại các chế độ với cùng điều kiện; ghi số lần đo thực tế.
 
 JSON và CSV được lưu sau phép đo vào `benchmark_results/runs-…/report.json` và `report.csv`. Đường dẫn hiện trên màn hình; có thể sao chép JSON. Đổi nơi lưu bằng `--dart-define=BENCHMARK_OUTPUT=<thư mục>`; ghi điều kiện máy bằng `--dart-define=BENCHMARK_MACHINE=<mô tả>`. Flutter SDK tự cung cấp phiên bản vào báo cáo.
 
@@ -106,7 +106,4 @@ Giữ `pubspec.yaml`, `pubspec.lock`, `.metadata` và `analysis_options.yaml` kh
 - [Kịch bản demo và Q&A](docs/DEMO.md)
 - [Phân công hai thành viên](TEAM.md)
 - [Phần việc A: dữ liệu, logic, Isolate và bằng chứng Git](docs/PHAN_VIEC_A.md)
-
-macOS cần được build và chạy trên máy Mac trước buổi báo cáo. File slide sẽ bổ sung khi hoàn tất.
-
-Kiểm tra sau refactor ngày 17/10/2026: format hoàn tất, `flutter analyze` không có lỗi/cảnh báo, **31 test pass**. Build Windows profile thành công. macOS chưa kiểm tra.
+- [Bàn giao thay đổi và commit theo hai thành viên](docs/GIT_HANDOFF.md)

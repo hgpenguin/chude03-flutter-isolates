@@ -128,12 +128,12 @@ class BenchmarkController extends ChangeNotifier with WidgetsBindingObserver {
   /// Nút Hủy: kill worker ngay; mẫu đo đang chạy được ghi là chưa đủ.
   void cancelRun() => _job?.cancel();
 
-  Future<void> _sample(ProcessingMode? mode) async {
+  Future<void> _sample(ProcessingMode mode) async {
     final dataset = _dataset!;
     final lifecycleAtStart = WidgetsBinding.instance.lifecycleState;
     _interrupted = isKnownBackground(lifecycleAtStart);
 
-    _status = 'Đang chạy • ${mode?.label ?? 'Không tải'}';
+    _status = 'Đang chạy • ${mode.label}';
     _detail =
         'Cửa sổ mục tiêu 5 giây, gồm thời gian trước và sau tác vụ. '
         'Thử bấm nút + và quan sát vòng quay.';
@@ -151,14 +151,10 @@ class BenchmarkController extends ChangeNotifier with WidgetsBindingObserver {
     try {
       await _wait(const Duration(seconds: 1));
       taskStartUs = window.elapsedMicroseconds;
-      if (mode != null) {
-        try {
-          result = await _process(mode, dataset.text);
-          dataset.verify(result.summary);
-        } finally {
-          taskEndUs = window.elapsedMicroseconds;
-        }
-      } else {
+      try {
+        result = await _process(mode, dataset.text);
+        dataset.verify(result.summary);
+      } finally {
         taskEndUs = window.elapsedMicroseconds;
       }
       final remainingUs = math.max(
@@ -193,11 +189,11 @@ class BenchmarkController extends ChangeNotifier with WidgetsBindingObserver {
     if (failure != null) throw failure;
   }
 
-  Future<void> execute({
-    ProcessingMode? mode,
-    bool batch = false,
-    bool invalid = false,
-  }) async {
+  Future<void> execute(ProcessingMode mode) => _execute(mode: mode);
+
+  Future<void> tryInvalidJson() => _execute(invalid: true);
+
+  Future<void> _execute({ProcessingMode? mode, bool invalid = false}) async {
     if (!ready) return;
     _update(() => _busy = true);
     try {
@@ -205,24 +201,8 @@ class BenchmarkController extends ChangeNotifier with WidgetsBindingObserver {
         _update(() => _status = 'Đang thử JSON lỗi');
         await _process(ProcessingMode.spawn, '[{"amount":"sai kiểu"}]');
         throw StateError('Parser đã chấp nhận dữ liệu sai!');
-      } else if (batch) {
-        // Warm-up cả ba chế độ, không ghi vào mẫu chính thức.
-        for (final warmupMode in ProcessingMode.values) {
-          if (_disposed) throw WorkerCancelled();
-          _update(() => _status = 'Warm-up • ${warmupMode.label}');
-          await WidgetsBinding.instance.endOfFrame;
-          if (_disposed) throw WorkerCancelled();
-          final result = await _process(warmupMode, _dataset!.text);
-          _dataset!.verify(result.summary);
-        }
-        await _sample(null);
-        for (var round = 0; round < 5; round++) {
-          for (var offset = 0; offset < 3; offset++) {
-            await _sample(ProcessingMode.values[(round + offset) % 3]);
-          }
-        }
       } else {
-        await _sample(mode);
+        await _sample(mode!);
       }
       if (_disposed) return;
 
@@ -246,7 +226,7 @@ class BenchmarkController extends ChangeNotifier with WidgetsBindingObserver {
       }
     } finally {
       if (!_disposed) {
-        // Ghi file sau cửa sổ đo, kể cả batch có lỗi để giữ mẫu dở dang.
+        // Ghi file sau cửa sổ đo, kể cả tác vụ lỗi để giữ mẫu dở dang.
         try {
           if (_runs.isNotEmpty) await _save();
         } catch (error) {
