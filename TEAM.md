@@ -43,10 +43,3 @@ Xem toàn bộ commit theo người: [Hoàng](https://github.com/hgpenguin/chude
 - Windows: số liệu profile trong `benchmark_results/RESULTS.md`.
 - macOS (Nhi, 18/10/2026): build và chạy đủ ba chế độ, cùng kết quả 180000 bản ghi / 8967430000. Gap lớn nhất: main 348 ms, compute 67 ms, spawn 50 ms.
 
-## Trình bày 20 phút
-
-| Phần | Hoàng | Nhi |
-|---|---|---|
-| Lý thuyết, kiến trúc (10 phút) | Single/multi-thread, async, bộ nhớ độc lập, parser, `compute`/`spawn`, ports | Kiến trúc app, UI/state, cách đo, kết quả và giới hạn |
-| Demo, code (5 phút) | Parser và luồng ports; demo JSON lỗi và phục hồi | Chạy ba chế độ, thao tác animation/nút +, đọc số liệu |
-| Q&A (5 phút) | Parser, Isolate, ports, lỗi/timeout/cleanup | UI, lifecycle, FPS/gap, tính công bằng của phép đo |
