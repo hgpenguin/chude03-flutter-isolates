@@ -19,16 +19,6 @@ git clone https://github.com/hgpenguin/chude03-flutter-isolates.git
 cd chude03-flutter-isolates
 ```
 
-Nếu dùng ZIP, giải nén rồi mở thư mục `isolate_demo`. Tại thư mục chứa `pubspec.yaml`, với Flutter trong PATH:
-
-```sh
-flutter --version
-flutter doctor -v
-flutter pub get
-flutter analyze
-flutter test
-```
-
 Windows, dùng PowerShell tại cùng thư mục:
 
 ```powershell
@@ -41,16 +31,7 @@ Mac, dùng Terminal tại cùng thư mục:
 flutter run -d macos
 ```
 
-Riêng workspace Windows hiện tại, dùng đường dẫn không dấu để tránh lỗi shader compiler. PowerShell:
-
-```powershell
-Set-Location 'D:\flutter-workspace\isolate_demo\isolate_demo'
-& 'D:\flutter-workspace\flutter\bin\flutter.bat' run -d windows
-```
-
 Nếu cần tạo lại dữ liệu, chạy `dart run tool/generate_dataset.dart` tại thư mục app. Generator dùng quy tắc cố định và tạo cả metadata.
-
-Hướng dẫn riêng cho máy Mac: [HD_CHAY_TREN_MAC.md](HD_CHAY_TREN_MAC.md).
 
 ## Cách thử
 
