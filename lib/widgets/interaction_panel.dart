@@ -21,7 +21,11 @@ class InteractionPanel extends StatelessWidget {
         children: [
           RotationTransition(
             turns: animation,
-            child: const Icon(Icons.sync, size: 56, color: Color(0xff087f8c)),
+            child: Icon(
+              Icons.sync,
+              size: 56,
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
           const SizedBox(width: 20),
           Expanded(

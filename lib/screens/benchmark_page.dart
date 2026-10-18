@@ -42,7 +42,7 @@ class _BenchmarkPageState extends State<BenchmarkPage>
   }
 
   Future<void> _copyReport() async {
-    await Clipboard.setData(ClipboardData(text: _controller.reportJson()));
+    await Clipboard.setData(ClipboardData(text: _controller.report().encode()));
     if (!mounted) return;
     ScaffoldMessenger.of(
       context,

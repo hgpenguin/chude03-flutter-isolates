@@ -14,6 +14,8 @@ class ResultsPanel extends StatelessWidget {
   final String? savedPath;
   final VoidCallback? onCopy;
 
+  static const _visibleRows = 20;
+
   String _number(num? value) => value?.toStringAsFixed(1) ?? '—';
 
   String _outcome(RunRecord run) {
@@ -42,11 +44,11 @@ class ResultsPanel extends StatelessWidget {
               DataColumn(label: Text('Kết quả')),
             ],
             rows: runs.reversed
-                .take(20)
+                .take(_visibleRows)
                 .map(
                   (r) => DataRow(
                     cells: [
-                      DataCell(Text('${r.runId} / ${r.modeName}')),
+                      DataCell(Text('${r.runId} / ${r.mode.name}')),
                       DataCell(Text(_number(r.task?.elapsedMs))),
                       DataCell(Text(_number(r.task?.parseMs))),
                       DataCell(Text(_number(r.frames.estimatedUiFps))),

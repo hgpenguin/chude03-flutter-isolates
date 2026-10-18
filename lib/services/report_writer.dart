@@ -41,7 +41,7 @@ class ReportWriter {
       (r) => <Object?>[
         r.runId,
         r.utc.toUtc().toIso8601String(),
-        r.modeName,
+        r.mode.name,
         r.task?.elapsedMs,
         r.task?.parseMs,
         r.frames.windowMs,

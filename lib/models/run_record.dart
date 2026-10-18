@@ -29,12 +29,11 @@ class RunRecord {
   final String lifecycleAtEnd;
   final String? error;
   final List<int> frameTimestampsUs;
-  String get modeName => mode.name;
 
   Map<String, Object?> toJson() => {
     'runId': runId,
     'utc': utc.toUtc().toIso8601String(),
-    'mode': modeName,
+    'mode': mode.name,
     'taskMs': task?.elapsedMs,
     'parseMs': task?.parseMs,
     'taskStartUs': taskStartUs,

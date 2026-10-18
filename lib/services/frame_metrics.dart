@@ -22,7 +22,9 @@ class FrameMetrics {
     return FrameStats(
       windowMs: endUs / 1000,
       frameCallbacks: count,
-      estimatedUiFps: endUs > 0 ? count * 1000000 / endUs : 0,
+      estimatedUiFps: endUs > 0
+          ? count * Duration.microsecondsPerSecond / endUs
+          : 0,
       maxGapMs: maxGap / 1000,
     );
   }

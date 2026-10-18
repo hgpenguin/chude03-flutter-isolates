@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:math' as math;
+import 'dart:collection';
 
 import 'package:flutter/widgets.dart';
 
@@ -10,6 +10,9 @@ import '../services/dataset.dart';
 import '../services/frame_metrics.dart';
 import '../services/processing.dart';
 import '../services/report_writer.dart';
+
+const _settleTime = Duration(seconds: 1);
+const _targetWindow = Duration(seconds: 5);
 
 bool isKnownBackground(AppLifecycleState? state) =>
     state != null && state != AppLifecycleState.resumed;
@@ -42,7 +45,7 @@ class BenchmarkController extends ChangeNotifier with WidgetsBindingObserver {
   String? _savedPath;
 
   Dataset? get dataset => _dataset;
-  List<RunRecord> get runs => List.unmodifiable(_runs);
+  List<RunRecord> get runs => UnmodifiableListView(_runs);
   bool get busy => _busy;
   bool get loading => _loading;
   bool get ready => !_disposed && !_busy && !_loading && _dataset != null;
@@ -148,7 +151,7 @@ class BenchmarkController extends ChangeNotifier with WidgetsBindingObserver {
     var taskStartUs = 0;
     var taskEndUs = 0;
     try {
-      await _wait(const Duration(seconds: 1));
+      await _wait(_settleTime);
       taskStartUs = window.elapsedMicroseconds;
       try {
         result = await _process(mode, dataset.text);
@@ -156,11 +159,8 @@ class BenchmarkController extends ChangeNotifier with WidgetsBindingObserver {
       } finally {
         taskEndUs = window.elapsedMicroseconds;
       }
-      final remainingUs = math.max(
-        1000000,
-        5000000 - window.elapsedMicroseconds,
-      );
-      await _wait(Duration(microseconds: remainingUs));
+      final remaining = _targetWindow - window.elapsed;
+      await _wait(remaining > _settleTime ? remaining : _settleTime);
     } catch (error) {
       failure = error;
     } finally {
@@ -242,8 +242,6 @@ class BenchmarkController extends ChangeNotifier with WidgetsBindingObserver {
     dataset: _dataset?.metadata,
     runs: _runs,
   );
-
-  String reportJson() => report().encode();
 
   @override
   void dispose() {
