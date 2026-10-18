@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:isolate_demo/models/benchmark_report.dart';
 import 'package:isolate_demo/models/frame_stats.dart';
+import 'package:isolate_demo/models/parse_summary.dart';
 import 'package:isolate_demo/models/run_record.dart';
 import 'package:isolate_demo/models/task_result.dart';
-import 'package:isolate_demo/models/parse_summary.dart';
 import 'package:isolate_demo/services/report_writer.dart';
 
 void main() {

@@ -33,7 +33,7 @@ class DatasetPanel extends StatelessWidget {
         if (data != null)
           SelectableText(
             '${data.id} • ${data.bytes} byte UTF-8 '
-            '(${(data.bytes / 1048576).toStringAsFixed(2)} MiB)\n'
+            '(${(data.bytes / (1024 * 1024)).toStringAsFixed(2)} MiB)\n'
             '${data.expected.count} bản ghi • tổng amount: ${data.expected.totalAmount} '
             '• FNV-1a: ${data.fnv1a32}',
           ),

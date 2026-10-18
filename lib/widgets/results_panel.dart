@@ -13,7 +13,15 @@ class ResultsPanel extends StatelessWidget {
   final List<RunRecord> runs;
   final String? savedPath;
   final VoidCallback? onCopy;
+
   String _number(num? value) => value?.toStringAsFixed(1) ?? '—';
+
+  String _outcome(RunRecord run) {
+    final task = run.task;
+    if (run.incomplete) return 'Mẫu chưa đủ';
+    if (task == null) return 'Không có kết quả';
+    return '${task.summary.count} / ${task.summary.totalAmount}';
+  }
 
   @override
   Widget build(BuildContext context) => BenchmarkPanel(
@@ -44,15 +52,7 @@ class ResultsPanel extends StatelessWidget {
                       DataCell(Text(_number(r.frames.estimatedUiFps))),
                       DataCell(Text(_number(r.frames.maxGapMs))),
                       DataCell(Text(_number(r.frames.windowMs))),
-                      DataCell(
-                        Text(
-                          r.incomplete
-                              ? 'Mẫu chưa đủ'
-                              : r.task == null
-                              ? 'Không có kết quả'
-                              : '${r.task!.summary.count} / ${r.task!.summary.totalAmount}',
-                        ),
-                      ),
+                      DataCell(Text(_outcome(r))),
                     ],
                   ),
                 )

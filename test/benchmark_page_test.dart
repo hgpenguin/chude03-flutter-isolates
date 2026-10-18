@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:isolate_demo/controllers/benchmark_controller.dart';
 import 'package:isolate_demo/models/dataset_metadata.dart';
 import 'package:isolate_demo/models/parse_summary.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:isolate_demo/screens/benchmark_page.dart';
 import 'package:isolate_demo/services/dataset.dart';
 
@@ -48,6 +48,7 @@ void main() {
     expect(find.text('Sẵn sàng'), findsOneWidget);
     await tester.pumpWidget(const SizedBox());
   });
+
   test('unknown lifecycle is distinct from known background states', () {
     expect(isKnownBackground(null), isFalse);
     expect(isKnownBackground(AppLifecycleState.resumed), isFalse);
@@ -60,6 +61,7 @@ void main() {
       expect(isKnownBackground(state), isTrue);
     }
   });
+
   testWidgets(
     'locks runs but keeps interaction; dispose during window is safe',
     (tester) async {
