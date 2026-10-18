@@ -15,13 +15,13 @@ Nội dung kiến trúc: ARCHITECTURE.md. Cần chuyển nội dung sang slide P
 | Thời gian | Thao tác |
 |---|---|
 | 0:00–0:40 | Xem JSON 27,18 MiB, byte/checksum/count và expected total |
-| 0:40–1:20 | Đo không tải rồi Main, nhìn animation/thử nút + |
+| 0:40–1:20 | Chạy Main, nhìn animation/thử nút + |
 | 1:20–2:10 | Chạy compute rồi spawn, kiểm kết quả giống nhau |
 | 2:10–3:00 | Đọc task ms, UI FPS ước lượng và max gap; nêu overhead/giới hạn |
 | 3:00–4:10 | Chỉ parser chung, compute, jsonWorker/ports và chỗ controller notifyListeners |
 | 4:10–5:00 | Thử JSON lỗi qua ports, chạy lại, chỉ raw JSON/CSV |
 
-Chạy batch 5 vòng trước giờ demo để có bảng đầy đủ; không chờ 80 giây trong phần trình bày 5 phút. Tổng duyệt có bấm giờ trên đúng máy báo cáo.
+Nếu cần số liệu chuẩn bị cho slide, chạy thủ công từng chế độ trước giờ demo và lưu báo cáo. Trong buổi demo, mỗi chế độ chỉ cần một lần để minh họa; không có warm-up, đo không tải hoặc batch tự động. Tổng duyệt có bấm giờ trên đúng máy báo cáo.
 
 ## 5 phút Q&A
 

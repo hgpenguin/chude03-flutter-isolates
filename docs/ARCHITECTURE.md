@@ -8,7 +8,7 @@ App đọc một file JSON lớn, đếm số bản ghi và cộng `amount`. Ba 
 |---|---|
 | `lib/screens/` | Ghép màn hình, quản lý animation và sao chép clipboard |
 | `lib/widgets/` | Các panel dữ liệu, tương tác, nút chạy, tiến độ/Hủy và kết quả |
-| `lib/controllers/` | Trạng thái, khóa nút chạy, warm-up, cửa sổ đo, tiến độ worker và lifecycle |
+| `lib/controllers/` | Trạng thái, khóa nút chạy, cửa sổ đo theo chế độ được chọn, tiến độ worker và lifecycle |
 | `lib/models/` | Kiểu dữ liệu: summary, kết quả chạy, metadata, báo cáo và message worker |
 | `lib/services/` | Nạp dataset, parse JSON, chạy Isolate, tính metrics và ghi file |
 
@@ -60,7 +60,9 @@ Các thông báo dùng chung một port nên tiến độ luôn đến trước 
 
 ## Tiến độ và Hủy
 
-Khi chạy `Isolate.spawn`, controller tạo `SpawnJob(onProgress: ...)` và lưu `progress` (0..1). `RunControlsPanel` hiện thanh tiến độ và nút **Hủy worker**. Nút này gọi `controller.cancelRun()` → `SpawnJob.cancel()`: Future kết thúc bằng `WorkerCancelled`, worker bị kill ngay, trạng thái chuyển thành "Đã hủy" và mẫu đo đang chạy được ghi `incomplete`. Batch đang chạy cũng dừng lại.
+Khi chạy `Isolate.spawn`, controller tạo `SpawnJob(onProgress: ...)` và lưu `progress` (0..1). `RunControlsPanel` hiện thanh tiến độ và nút **Hủy worker**. Nút này gọi `controller.cancelRun()` → `SpawnJob.cancel()`: Future kết thúc bằng `WorkerCancelled`, worker bị kill ngay, trạng thái chuyển thành "Đã hủy" và mẫu đo đang chạy được ghi `incomplete`.
+
+Panel chạy có ba nút Main/compute/spawn và một nút thử JSON lỗi. `execute(mode)` chỉ đo chế độ được chọn; `tryInvalidJson()` đi qua worker để minh họa bắt lỗi và phục hồi. Không còn luồng warm-up, batch hoặc đo không tải. Cửa sổ đo 5 giây vẫn giữ để tính FPS/gap, không phải vòng chạy lặp.
 
 Đây là điểm `Isolate.spawn` làm được mà `compute` không làm được: nhận nhiều message trong lúc chạy và dừng worker giữa chừng. `compute` không có thao tác kill trực tiếp trong app; controller bỏ kết quả đến sau dispose.
 

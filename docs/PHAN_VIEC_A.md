@@ -62,3 +62,9 @@ git log --format="%h %an <%ae> %s" -- lib/services/dataset.dart lib/services/jso
 ```
 
 Hướng dẫn clone/chạy và repo: [README.md](../README.md). Bảng phân công và đóng góp: [TEAM.md](../TEAM.md).
+
+## 5. Cập nhật đơn giản hóa demo ngày 18/10/2026
+
+Theo phân công được chốt, A là **Nguyễn Thái Hoàng**, B là **Lê Trương Uyển Nhi**, tỷ lệ phân công mỗi người 50%. Hoàng cập nhật README, tài liệu kiến trúc/demo, bảng phân công và chuẩn bị bàn giao thay đổi UI/controller cho Nhi tự kiểm tra và commit. Các chức năng dữ liệu, parser, compute/spawn và xử lý lỗi của phần A vẫn được giữ.
+
+Trên working tree đã áp dụng bản vá: `flutter analyze` sạch, **34 test pass**, build Windows profile thành công. Bản mới bỏ warm-up, đo không tải và batch tự động; vẫn có ba chế độ chính, thử JSON lỗi, tiến độ và hủy worker. Trạng thái nhánh và hướng dẫn Nhi tự commit nằm trong [GIT_HANDOFF.md](GIT_HANDOFF.md); commit tài liệu của Hoàng chưa bao gồm phần mã nguồn bàn giao.

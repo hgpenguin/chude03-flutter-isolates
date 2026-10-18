@@ -29,7 +29,7 @@ Thang điểm theo đề: slide/báo cáo 20%; source 30%; demo 30%; thuyết tr
 
 ## Phần còn cần hoàn tất để nộp
 
-- Điền tên hai thành viên, xác nhận WBS và commit thật.
+- Xác nhận WBS theo tên hai thành viên trong TEAM.md; mỗi người review và tự commit phần thực tế mình hoàn thiện. Bản đơn giản hóa UI chờ Nhi nhận bản vá và commit theo GIT_HANDOFF.md.
 - Làm slide PowerPoint/PDF theo mẫu lớp nếu có.
 - Repo công khai: [github.com/hgpenguin/chude03-flutter-isolates](https://github.com/hgpenguin/chude03-flutter-isolates). Thành viên còn lại thử clone và chạy README trên máy của mình.
 - Kiểm tra macOS nếu dùng Mac để báo cáo; hiện mới có bằng chứng Windows.

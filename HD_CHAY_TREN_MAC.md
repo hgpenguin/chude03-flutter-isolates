@@ -44,7 +44,7 @@ Tại cùng thư mục trong Terminal:
 flutter run --profile -d macos
 ```
 
-Đợi **Sẵn sàng**, thử ba chế độ rồi chạy **Warm-up + 5 vòng**. Quan sát vòng quay và thử nút +. Ba chế độ phải trả 180.000 bản ghi, tổng amount 8.967.430.000.
+Đợi **Sẵn sàng**, bấm lần lượt **Main Isolate**, **compute**, **Isolate.spawn**. Mỗi nút tạo một mẫu đo; không có warm-up hoặc đo không tải. Quan sát vòng quay và thử nút +. Ba chế độ phải trả 180.000 bản ghi, tổng amount 8.967.430.000. Thử thêm **Thử JSON lỗi qua ports** rồi chạy lại một chế độ để kiểm tra phục hồi.
 
 Kết quả nằm ở `benchmark_results/runs-…/report.json` và `report.csv` dưới thư mục làm việc của app. Đường dẫn chính xác hiện trên màn hình. Có thể chỉ định nơi ghi trong Terminal:
 
