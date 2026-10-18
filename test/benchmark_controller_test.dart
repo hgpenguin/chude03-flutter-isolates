@@ -70,7 +70,7 @@ void main() {
       final controller = BenchmarkController(loadDataset: () async => sample);
       addTearDown(controller.dispose);
       await controller.load();
-      await controller.execute(invalid: true);
+      await controller.tryInvalidJson();
       expect(controller.status, 'Đã bắt lỗi dữ liệu đúng dự kiến');
       expect(controller.ready, isTrue);
       expect(controller.runs, isEmpty);

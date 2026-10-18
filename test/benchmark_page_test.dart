@@ -30,6 +30,12 @@ void main() {
     );
     await tester.pump();
     expect(find.text('Đang nạp dữ liệu'), findsOneWidget);
+    expect(find.byKey(const Key('run-main')), findsOneWidget);
+    expect(find.byKey(const Key('run-compute')), findsOneWidget);
+    expect(find.byKey(const Key('run-spawn')), findsOneWidget);
+    expect(find.text('Thử JSON lỗi qua ports'), findsOneWidget);
+    expect(find.text('Đo không tải'), findsNothing);
+    expect(find.textContaining('Warm-up'), findsNothing);
     expect(
       tester.widget<FilledButton>(find.byKey(const Key('run-main'))).onPressed,
       isNull,

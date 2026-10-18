@@ -63,13 +63,14 @@ class BenchmarkReport {
 
   Map<String, Object?> toJson() => {
     'schema': 1,
-    'implementation': 'typed-controller-v2',
+    'implementation': 'typed-controller-v3-manual',
     'environment': environment.toJson(),
     'dataset': dataset?.toJson(),
     'method':
         'AnimationController callbacks / actual Stopwatch window. '
         'Target 5s, task after 1s, at least 1s after task; both edge gaps included. '
-        'Batch: warm-up, baseline, 5 rotated rounds.',
+        'One selected mode per button press: main, compute or spawn. '
+        'No automatic warm-up or baseline.',
     'limitations':
         'UI FPS là số callback/giây, chưa đối chiếu DevTools/FrameTiming. '
         'Lifecycle unknown cần kiểm tra cửa sổ thủ công. GC và tải nền có ảnh hưởng.',

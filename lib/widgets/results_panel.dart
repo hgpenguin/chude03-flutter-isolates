@@ -49,7 +49,7 @@ class ResultsPanel extends StatelessWidget {
                           r.incomplete
                               ? 'Mẫu chưa đủ'
                               : r.task == null
-                              ? 'Không tải'
+                              ? 'Không có kết quả'
                               : '${r.task!.summary.count} / ${r.task!.summary.totalAmount}',
                         ),
                       ),

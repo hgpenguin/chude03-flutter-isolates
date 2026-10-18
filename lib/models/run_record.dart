@@ -19,7 +19,7 @@ class RunRecord {
 
   final int runId;
   final DateTime utc;
-  final ProcessingMode? mode;
+  final ProcessingMode mode;
   final TaskResult? task;
   final int taskStartUs;
   final int taskEndUs;
@@ -29,7 +29,7 @@ class RunRecord {
   final String lifecycleAtEnd;
   final String? error;
   final List<int> frameTimestampsUs;
-  String get modeName => mode?.name ?? 'baseline';
+  String get modeName => mode.name;
 
   Map<String, Object?> toJson() => {
     'runId': runId,

@@ -8,16 +8,12 @@ class RunControlsPanel extends StatelessWidget {
     super.key,
     required this.ready,
     required this.onRun,
-    required this.onBaseline,
-    required this.onBatch,
     required this.onInvalid,
     this.progress,
     this.onCancel,
   });
   final bool ready;
   final ValueChanged<ProcessingMode> onRun;
-  final VoidCallback onBaseline;
-  final VoidCallback onBatch;
   final VoidCallback onInvalid;
 
   /// Tiến độ 0..1 do worker gửi qua SendPort; null khi không chạy Isolate.spawn.
@@ -38,14 +34,6 @@ class RunControlsPanel extends StatelessWidget {
               onPressed: ready ? () => onRun(mode) : null,
               child: Text(mode.label),
             ),
-          OutlinedButton(
-            onPressed: ready ? onBaseline : null,
-            child: const Text('Đo không tải'),
-          ),
-          OutlinedButton(
-            onPressed: ready ? onBatch : null,
-            child: const Text('Warm-up + 5 vòng (~80 giây)'),
-          ),
           TextButton(
             onPressed: ready ? onInvalid : null,
             child: const Text('Thử JSON lỗi qua ports'),

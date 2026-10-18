@@ -91,10 +91,8 @@ class _BenchmarkPageState extends State<BenchmarkPage>
               ),
               RunControlsPanel(
                 ready: _controller.ready,
-                onRun: (mode) => _controller.execute(mode: mode),
-                onBaseline: () => _controller.execute(),
-                onBatch: () => _controller.execute(batch: true),
-                onInvalid: () => _controller.execute(invalid: true),
+                onRun: _controller.execute,
+                onInvalid: _controller.tryInvalidJson,
                 progress: _controller.progress,
                 onCancel: _controller.canCancel ? _controller.cancelRun : null,
               ),
