@@ -14,3 +14,5 @@
 app.*.symbols
 app.*.map.json
 .widget_preview/
+
+benchmark_results/runs-*/

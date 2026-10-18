@@ -9,18 +9,19 @@ class SavedReport {
 }
 
 class ReportWriter {
-  ReportWriter({this.directory});
-  final Directory? directory;
+  ReportWriter({Directory? directory})
+    : directory = directory ?? _defaultDirectory();
+
+  final Directory directory;
+
+  static Directory _defaultDirectory() {
+    const output = String.fromEnvironment('BENCHMARK_OUTPUT');
+    return Directory(
+      output.isEmpty ? '${Directory.current.path}/benchmark_results' : output,
+    );
+  }
 
   Future<SavedReport> save(BenchmarkReport report) async {
-    const output = String.fromEnvironment('BENCHMARK_OUTPUT');
-    final directory =
-        this.directory ??
-        Directory(
-          output.isEmpty
-              ? '${Directory.current.path}/benchmark_results'
-              : output,
-        );
     await directory.create(recursive: true);
     final bundle = await directory.createTemp('runs-');
     final json = File('${bundle.path}/report.json');

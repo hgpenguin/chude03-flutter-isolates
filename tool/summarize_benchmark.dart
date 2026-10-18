@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+// values phải được sắp xếp tăng dần.
 double median(List<double> values) {
-  values.sort();
   final middle = values.length ~/ 2;
   return values.length.isOdd
       ? values[middle]
@@ -30,14 +30,17 @@ void main(List<String> args) {
         .where((r) => r['mode'] == mode && r['incomplete'] == false)
         .toList();
     String describe(String key) {
-      final values = rows
-          .map((r) => r[key])
-          .whereType<num>()
-          .map((v) => v.toDouble())
-          .toList();
+      final values =
+          rows
+              .map((r) => r[key])
+              .whereType<num>()
+              .map((v) => v.toDouble())
+              .toList()
+            ..sort();
       if (values.isEmpty) return '—';
-      final middle = median(values);
-      return '${middle.toStringAsFixed(2)} [${values.first.toStringAsFixed(2)}–${values.last.toStringAsFixed(2)}]';
+      String fixed(double v) => v.toStringAsFixed(2);
+      return '${fixed(median(values))} '
+          '[${fixed(values.first)}–${fixed(values.last)}]';
     }
 
     stdout.writeln(
